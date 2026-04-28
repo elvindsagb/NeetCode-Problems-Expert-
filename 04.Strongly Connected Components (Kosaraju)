@@ -1,0 +1,47 @@
+Concepts: Graph + DFS + Reverse graph
+
+------------------------------------------------------------------------------------------------------
+
+def kosaraju(graph):
+    n = len(graph)
+    visited = [False]*n
+    stack = []
+
+    def dfs(v):
+        visited[v] = True
+        for u in graph[v]:
+            if not visited[u]:
+                dfs(u)
+        stack.append(v)
+
+    for i in range(n):
+        if not visited[i]:
+            dfs(i)
+
+    rev = [[] for _ in range(n)]
+    for v in range(n):
+        for u in graph[v]:
+            rev[u].append(v)
+
+    visited = [False]*n
+    components = []
+
+    def dfs_rev(v, comp):
+        visited[v] = True
+        comp.append(v)
+        for u in rev[v]:
+            if not visited[u]:
+                dfs_rev(u, comp)
+
+    while stack:
+        v = stack.pop()
+        if not visited[v]:
+            comp = []
+            dfs_rev(v, comp)
+            components.append(comp)
+
+    return components
+
+
+graph = [[1],[2],[0,3],[4],[]]
+print(kosaraju(graph))
