@@ -1,0 +1,30 @@
+Concepts: Digit DP + memoization
+
+----------------------------------------------------------------------------------------------
+
+from functools import lru_cache
+
+def count_no_consecutive_ones(n):
+    binary = bin(n)[2:]
+
+    @lru_cache(None)
+    def dp(pos, prev, tight):
+        if pos == len(binary):
+            return 1
+
+        limit = int(binary[pos]) if tight else 1
+        total = 0
+
+        for bit in range(limit + 1):
+            if prev == 1 and bit == 1:
+                continue
+            total += dp(pos+1, bit, tight and bit == limit)
+
+        return total
+
+    return dp(0, 0, True)
+
+
+print(count_no_consecutive_ones(10))
+
+
