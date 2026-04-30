@@ -1,0 +1,48 @@
+Concepts: Immutable data structure
+
+-----------------------------------------------------------------------------------------
+
+class Node:
+    def __init__(self, left=None, right=None, val=0):
+        self.left = left
+        self.right = right
+        self.val = val
+
+
+def build(arr, l, r):
+    if l == r:
+        return Node(val=arr[l])
+    mid = (l+r)//2
+    left = build(arr, l, mid)
+    right = build(arr, mid+1, r)
+    return Node(left, right, left.val + right.val)
+
+
+def update(prev, l, r, idx, val):
+    if l == r:
+        return Node(val=val)
+    mid = (l+r)//2
+    if idx <= mid:
+        left = update(prev.left, l, mid, idx, val)
+        return Node(left, prev.right, left.val + prev.right.val)
+    else:
+        right = update(prev.right, mid+1, r, idx, val)
+        return Node(prev.left, right, prev.left.val + right.val)
+
+
+def query(node, l, r, ql, qr):
+    if qr < l or ql > r:
+        return 0
+    if ql <= l and r <= qr:
+        return node.val
+    mid = (l+r)//2
+    return query(node.left, l, mid, ql, qr) + \
+           query(node.right, mid+1, r, ql, qr)
+
+
+arr = [1,2,3,4]
+root1 = build(arr, 0, 3)
+root2 = update(root1, 0, 3, 2, 10)
+
+print(query(root1, 0, 3, 0, 3))  # old version
+print(query(root2, 0, 3, 0, 3))  # new version
