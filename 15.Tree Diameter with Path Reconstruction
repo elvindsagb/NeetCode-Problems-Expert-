@@ -1,0 +1,32 @@
+Concepts: Tree DP + DFS (2-pass)
+
+----------------------------------------------------------------------
+
+def tree_diameter(graph):
+    def dfs(node, parent):
+        farthest = (0, node)
+        for nei in graph[node]:
+            if nei != parent:
+                dist, far = dfs(nei, node)
+                if dist + 1 > farthest[0]:
+                    farthest = (dist + 1, far)
+        return farthest
+
+    # First DFS
+    _, far_node = dfs(0, -1)
+
+    # Second DFS from far_node
+    dist, other_end = dfs(far_node, -1)
+
+    return dist, (far_node, other_end)
+
+
+graph = {
+    0: [1],
+    1: [0,2,3],
+    2: [1],
+    3: [1,4],
+    4: [3]
+}
+
+print(tree_diameter(graph))
