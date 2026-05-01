@@ -1,0 +1,31 @@
+Concepts: Divide & Conquer + Binary Search
+
+------------------------------------------------------------------------------------------------
+
+from bisect import bisect_right
+
+def subset_sums(arr):
+    sums = [0]
+    for num in arr:
+        sums += [num + s for s in sums]
+    return sums
+
+def meet_in_middle(nums, target):
+    n = len(nums)
+    left = subset_sums(nums[:n//2])
+    right = subset_sums(nums[n//2:])
+
+    right.sort()
+    best = 0
+
+    for x in left:
+        if x > target:
+            continue
+        idx = bisect_right(right, target - x) - 1
+        if idx >= 0:
+            best = max(best, x + right[idx])
+
+    return best
+
+
+print(meet_in_middle([3,34,4,12,5,2], 10))
