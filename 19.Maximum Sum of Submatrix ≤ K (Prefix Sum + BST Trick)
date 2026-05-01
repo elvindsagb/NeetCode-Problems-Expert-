@@ -1,0 +1,31 @@
+Concepts: 2D prefix + ordered set (very advanced)
+
+------------------------------------------------------------------------------------------
+
+import bisect
+
+def maxSumSubmatrix(matrix, k):
+    rows, cols = len(matrix), len(matrix[0])
+    res = float('-inf')
+
+    for left in range(cols):
+        row_sum = [0]*rows
+        for right in range(left, cols):
+            for i in range(rows):
+                row_sum[i] += matrix[i][right]
+
+            prefix = [0]
+            curr = 0
+
+            for s in row_sum:
+                curr += s
+                idx = bisect.bisect_left(prefix, curr - k)
+                if idx < len(prefix):
+                    res = max(res, curr - prefix[idx])
+                bisect.insort(prefix, curr)
+
+    return res
+
+
+matrix = [[1,0,1],[0,-2,3]]
+print(maxSumSubmatrix(matrix, 2))
