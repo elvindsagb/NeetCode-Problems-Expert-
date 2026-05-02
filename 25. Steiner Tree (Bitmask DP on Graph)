@@ -1,0 +1,44 @@
+Concepts: DP + shortest paths (very high difficulty)
+
+----------------------------------------------------------------------------------
+
+import heapq
+
+def steiner_tree(graph, terminals):
+    n = len(graph)
+    k = len(terminals)
+    dp = [[float('inf')]*n for _ in range(1<<k)]
+
+    for i in range(k):
+        dp[1<<i][terminals[i]] = 0
+
+    for mask in range(1<<k):
+        for u in range(n):
+            for sub in range(mask):
+                if sub & mask == sub:
+                    dp[mask][u] = min(
+                        dp[mask][u],
+                        dp[sub][u] + dp[mask^sub][u]
+                    )
+
+        pq = [(dp[mask][u], u) for u in range(n)]
+        heapq.heapify(pq)
+
+        while pq:
+            d, u = heapq.heappop(pq)
+            if d > dp[mask][u]:
+                continue
+            for v, w in graph[u]:
+                if dp[mask][v] > d + w:
+                    dp[mask][v] = d + w
+                    heapq.heappush(pq, (dp[mask][v], v))
+
+    return min(dp[(1<<k)-1])
+
+
+graph = {
+    0: [(1,1),(2,2)],
+    1: [(0,1),(2,1)],
+    2: [(0,2),(1,1)]
+}
+print(steiner_tree(graph, [0,2]))
