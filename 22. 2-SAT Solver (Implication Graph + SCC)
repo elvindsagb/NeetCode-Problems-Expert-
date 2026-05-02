@@ -1,0 +1,58 @@
+Concepts: Boolean satisfiability + graph + SCC
+
+-----------------------------------------------------------------------------------------------------
+
+def two_sat(n, clauses):
+    g = [[] for _ in range(2*n)]
+    def var(x): return 2*x
+    def neg(x): return x^1
+
+    for a, b in clauses:
+        g[neg(a)].append(b)
+        g[neg(b)].append(a)
+
+    order = []
+    visited = [False]*(2*n)
+
+    def dfs(v):
+        visited[v] = True
+        for u in g[v]:
+            if not visited[u]:
+                dfs(u)
+        order.append(v)
+
+    for i in range(2*n):
+        if not visited[i]:
+            dfs(i)
+
+    rg = [[] for _ in range(2*n)]
+    for v in range(2*n):
+        for u in g[v]:
+            rg[u].append(v)
+
+    comp = [-1]*(2*n)
+
+    def dfs2(v, c):
+        comp[v] = c
+        for u in rg[v]:
+            if comp[u] == -1:
+                dfs2(u, c)
+
+    j = 0
+    for v in reversed(order):
+        if comp[v] == -1:
+            dfs2(v, j)
+            j += 1
+
+    res = [False]*n
+    for i in range(n):
+        if comp[2*i] == comp[2*i+1]:
+            return None
+        res[i] = comp[2*i] > comp[2*i+1]
+
+    return res
+
+
+# Example: (x0 OR x1) AND (!x0 OR x1)
+clauses = [(0*2, 1*2), (0*2+1, 1*2)]
+print(two_sat(2, clauses))
