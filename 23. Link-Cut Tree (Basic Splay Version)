@@ -1,0 +1,44 @@
+Concepts: Dynamic trees (very advanced DS)
+
+-----------------------------------------------------------------------
+
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.left = self.right = self.parent = None
+
+def rotate(x):
+    p = x.parent
+    g = p.parent
+    if p.left == x:
+        p.left = x.right
+        if x.right:
+            x.right.parent = p
+        x.right = p
+    else:
+        p.right = x.left
+        if x.left:
+            x.left.parent = p
+        x.left = p
+    p.parent = x
+    x.parent = g
+    if g:
+        if g.left == p:
+            g.left = x
+        else:
+            g.right = x
+
+def splay(x):
+    while x.parent:
+        p = x.parent
+        g = p.parent
+        if g:
+            rotate(p if (g.left == p) == (p.left == x) else x)
+        rotate(x)
+
+# Demo
+a = Node(1)
+b = Node(2)
+b.parent = a
+splay(b)
+print("Root after splay:", b.val)
