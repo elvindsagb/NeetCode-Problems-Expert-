@@ -1,0 +1,44 @@
+Concepts: Divide & Conquer + complex numbers
+
+---------------------------------------------------------------------------
+
+import cmath
+
+def fft(a):
+    n = len(a)
+    if n == 1:
+        return a
+
+    w = cmath.exp(2j * cmath.pi / n)
+    w_n = 1
+
+    even = fft(a[0::2])
+    odd = fft(a[1::2])
+
+    y = [0]*n
+    for k in range(n//2):
+        y[k] = even[k] + w_n * odd[k]
+        y[k + n//2] = even[k] - w_n * odd[k]
+        w_n *= w
+
+    return y
+
+def multiply(a, b):
+    n = 1
+    while n < len(a) + len(b):
+        n *= 2
+
+    a += [0]*(n - len(a))
+    b += [0]*(n - len(b))
+
+    fa = fft(list(map(complex, a)))
+    fb = fft(list(map(complex, b)))
+
+    for i in range(n):
+        fa[i] *= fb[i]
+
+    inv = fft(fa)
+    return [round((inv[i].real)/n) for i in range(n)]
+
+
+print(multiply([1,2,3], [4,5]))
