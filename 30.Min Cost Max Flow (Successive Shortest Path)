@@ -1,0 +1,75 @@
+Concepts: Flow + Dijkstra with potentials
+
+-----------------------------------------------------------------------------------------------
+
+import heapq
+
+class MinCostMaxFlow:
+    def __init__(self, n):
+        self.n = n
+        self.graph = [[] for _ in range(n)]
+
+    def add_edge(self, u, v, cap, cost):
+        self.graph[u].append([v, cap, cost, len(self.graph[v])])
+        self.graph[v].append([u, 0, -cost, len(self.graph[u]) - 1])
+
+    def min_cost_flow(self, s, t):
+        n = self.n
+        flow = cost = 0
+        potential = [0]*n
+
+        while True:
+            dist = [float('inf')]*n
+            parent = [-1]*n
+            edge_idx = [-1]*n
+            dist[s] = 0
+
+            pq = [(0, s)]
+            while pq:
+                d, u = heapq.heappop(pq)
+                if d > dist[u]:
+                    continue
+                for i, (v, cap, c, _) in enumerate(self.graph[u]):
+                    if cap > 0:
+                        nd = d + c + potential[u] - potential[v]
+                        if nd < dist[v]:
+                            dist[v] = nd
+                            parent[v] = u
+                            edge_idx[v] = i
+                            heapq.heappush(pq, (nd, v))
+
+            if dist[t] == float('inf'):
+                break
+
+            for i in range(n):
+                if dist[i] < float('inf'):
+                    potential[i] += dist[i]
+
+            f = float('inf')
+            v = t
+            while v != s:
+                u = parent[v]
+                f = min(f, self.graph[u][edge_idx[v]][1])
+                v = u
+
+            v = t
+            while v != s:
+                u = parent[v]
+                edge = self.graph[u][edge_idx[v]]
+                edge[1] -= f
+                self.graph[v][edge[3]][1] += f
+                v = u
+
+            flow += f
+            cost += f * potential[t]
+
+        return flow, cost
+
+
+mcmf = MinCostMaxFlow(4)
+mcmf.add_edge(0,1,2,1)
+mcmf.add_edge(0,2,1,2)
+mcmf.add_edge(1,3,2,3)
+mcmf.add_edge(2,3,1,1)
+
+print("Flow, Cost:", mcmf.min_cost_flow(0,3))
