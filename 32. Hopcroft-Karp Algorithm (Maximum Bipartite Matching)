@@ -1,0 +1,76 @@
+Concepts: BFS + DFS optimization
+
+----------------------------------------------------------------------------------------
+
+from collections import deque
+
+INF = float('inf')
+
+class HopcroftKarp:
+    def __init__(self, graph, U):
+        self.graph = graph
+        self.U = U
+        self.pairU = {}
+        self.pairV = {}
+        self.dist = {}
+
+    def bfs(self):
+        queue = deque()
+
+        for u in self.U:
+            if self.pairU.get(u) is None:
+                self.dist[u] = 0
+                queue.append(u)
+            else:
+                self.dist[u] = INF
+
+        found = False
+
+        while queue:
+            u = queue.popleft()
+
+            for v in self.graph[u]:
+                pu = self.pairV.get(v)
+
+                if pu is None:
+                    found = True
+                elif self.dist[pu] == INF:
+                    self.dist[pu] = self.dist[u] + 1
+                    queue.append(pu)
+
+        return found
+
+    def dfs(self, u):
+        for v in self.graph[u]:
+            pu = self.pairV.get(v)
+
+            if pu is None or (
+                self.dist[pu] == self.dist[u] + 1 and self.dfs(pu)
+            ):
+                self.pairU[u] = v
+                self.pairV[v] = u
+                return True
+
+        self.dist[u] = INF
+        return False
+
+    def max_matching(self):
+        matching = 0
+
+        while self.bfs():
+            for u in self.U:
+                if self.pairU.get(u) is None:
+                    if self.dfs(u):
+                        matching += 1
+
+        return matching
+
+
+graph = {
+    1: ['A', 'B'],
+    2: ['A'],
+    3: ['B']
+}
+
+hk = HopcroftKarp(graph, [1,2,3])
+print(hk.max_matching())
