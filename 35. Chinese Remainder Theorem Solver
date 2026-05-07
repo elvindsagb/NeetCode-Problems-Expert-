@@ -1,0 +1,37 @@
+Concepts: Number theory + modular arithmetic
+
+------------------------------------------------------------------------------------------------
+
+def extended_gcd(a, b):
+    if b == 0:
+        return a, 1, 0
+
+    gcd, x1, y1 = extended_gcd(b, a % b)
+
+    x = y1
+    y = x1 - (a // b) * y1
+
+    return gcd, x, y
+
+
+def crt(remainders, moduli):
+    prod = 1
+
+    for m in moduli:
+        prod *= m
+
+    result = 0
+
+    for r, m in zip(remainders, moduli):
+        pp = prod // m
+        gcd, inv, _ = extended_gcd(pp, m)
+
+        result += r * inv * pp
+
+    return result % prod
+
+
+remainders = [2, 3, 2]
+moduli = [3, 5, 7]
+
+print(crt(remainders, moduli))
