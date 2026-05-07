@@ -1,0 +1,44 @@
+Concepts: Online suffix tree construction
+
+----------------------------------------------------------------------------------
+
+class Node:
+    def __init__(self):
+        self.children = {}
+        self.start = -1
+        self.end = -1
+
+class SuffixTree:
+    def __init__(self, text):
+        self.text = text
+        self.root = Node()
+        self.build()
+
+    def build(self):
+        n = len(self.text)
+
+        for i in range(n):
+            current = self.root
+
+            for j in range(i, n):
+                ch = self.text[j]
+
+                if ch not in current.children:
+                    node = Node()
+                    node.start = j
+                    node.end = n - 1
+                    current.children[ch] = node
+
+                current = current.children[ch]
+
+    def display(self, node=None, depth=0):
+        if node is None:
+            node = self.root
+
+        for ch, child in node.children.items():
+            print(" " * depth + self.text[child.start:child.end+1])
+            self.display(child, depth + 2)
+
+
+tree = SuffixTree("banana$")
+tree.display()
