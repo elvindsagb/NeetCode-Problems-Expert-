@@ -1,0 +1,48 @@
+Concepts: Knuth Algorithm X
+
+-----------------------------------------------------------------------------
+
+class Node:
+    def __init__(self):
+        self.left = self.right = self.up = self.down = self
+        self.column = None
+
+
+class Column(Node):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+        self.size = 0
+
+
+def cover(col):
+    col.right.left = col.left
+    col.left.right = col.right
+
+    row = col.down
+    while row != col:
+        node = row.right
+        while node != row:
+            node.down.up = node.up
+            node.up.down = node.down
+            node.column.size -= 1
+            node = node.right
+        row = row.down
+
+
+def uncover(col):
+    row = col.up
+    while row != col:
+        node = row.left
+        while node != row:
+            node.column.size += 1
+            node.down.up = node
+            node.up.down = node
+            node = node.left
+        row = row.up
+
+    col.right.left = col
+    col.left.right = col
+
+
+print("Dancing Links structure initialized.")
