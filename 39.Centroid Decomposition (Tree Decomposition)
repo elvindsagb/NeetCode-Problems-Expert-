@@ -1,0 +1,46 @@
+Concepts: Advanced tree algorithms
+
+---------------------------------------------------------------------------------
+
+from collections import defaultdict
+
+tree = defaultdict(list)
+visited = set()
+subtree = {}
+
+def dfs_size(node, parent):
+    subtree[node] = 1
+
+    for nei in tree[node]:
+        if nei != parent and nei not in visited:
+            dfs_size(nei, node)
+            subtree[node] += subtree[nei]
+
+def dfs_centroid(node, parent, size):
+    for nei in tree[node]:
+        if nei != parent and nei not in visited:
+            if subtree[nei] > size // 2:
+                return dfs_centroid(nei, node, size)
+
+    return node
+
+def build(node):
+    dfs_size(node, -1)
+    centroid = dfs_centroid(node, -1, subtree[node])
+
+    visited.add(centroid)
+
+    print("Centroid:", centroid)
+
+    for nei in tree[centroid]:
+        if nei not in visited:
+            build(nei)
+
+# Example tree
+tree[0] = [1,2]
+tree[1] = [0,3,4]
+tree[2] = [0]
+tree[3] = [1]
+tree[4] = [1]
+
+build(0)
