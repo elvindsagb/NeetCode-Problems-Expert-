@@ -1,0 +1,58 @@
+Concepts: Computational geometry + divide & conquer
+
+---------------------------------------------------------------------------------
+
+class KDNode:
+    def __init__(self, point, left=None, right=None):
+        self.point = point
+        self.left = left
+        self.right = right
+
+
+def build_kdtree(points, depth=0):
+    if not points:
+        return None
+
+    k = 2
+    axis = depth % k
+
+    points.sort(key=lambda x: x[axis])
+    mid = len(points) // 2
+
+    return KDNode(
+        points[mid],
+        build_kdtree(points[:mid], depth + 1),
+        build_kdtree(points[mid + 1:], depth + 1)
+    )
+
+
+def nearest(root, target, depth=0, best=None):
+    if root is None:
+        return best
+
+    k = 2
+    axis = depth % k
+
+    next_branch = root.left if target[axis] < root.point[axis] else root.right
+    opposite_branch = root.right if next_branch == root.left else root.left
+
+    best = nearest(next_branch, target, depth + 1, best)
+
+    if best is None or distance(root.point, target) < distance(best, target):
+        best = root.point
+
+    if abs(target[axis] - root.point[axis]) < distance(best, target):
+        best = nearest(opposite_branch, target, depth + 1, best)
+
+    return best
+
+
+def distance(a, b):
+    return ((a[0]-b[0])**2 + (a[1]-b[1])**2) ** 0.5
+
+
+points = [(2,3), (5,4), (9,6), (4,7), (8,1), (7,2)]
+
+tree = build_kdtree(points)
+
+print(nearest(tree, (9,2)))
