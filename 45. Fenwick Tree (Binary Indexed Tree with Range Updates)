@@ -1,0 +1,37 @@
+Concepts: Prefix structures + optimization
+
+------------------------------------------------------------------
+
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
+
+    def update(self, idx, delta):
+        while idx <= self.n:
+            self.bit[idx] += delta
+            idx += idx & -idx
+
+    def query(self, idx):
+        s = 0
+
+        while idx > 0:
+            s += self.bit[idx]
+            idx -= idx & -idx
+
+        return s
+
+    def range_update(self, l, r, val):
+        self.update(l, val)
+        self.update(r + 1, -val)
+
+    def point_query(self, idx):
+        return self.query(idx)
+
+
+ft = Fenwick(10)
+
+ft.range_update(2, 5, 10)
+
+print(ft.point_query(3))
+print(ft.point_query(6))
