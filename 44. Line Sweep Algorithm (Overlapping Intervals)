@@ -1,0 +1,31 @@
+Concepts: Computational geometry
+
+-----------------------------------------------------------------------
+
+def max_overlaps(intervals):
+    events = []
+
+    for start, end in intervals:
+        events.append((start, 1))
+        events.append((end, -1))
+
+    events.sort()
+
+    active = 0
+    best = 0
+
+    for _, val in events:
+        active += val
+        best = max(best, active)
+
+    return best
+
+
+intervals = [
+    (1,5),
+    (2,7),
+    (4,6),
+    (8,10)
+]
+
+print(max_overlaps(intervals))
