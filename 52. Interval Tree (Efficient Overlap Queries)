@@ -1,0 +1,53 @@
+Concepts: Augmented BST
+
+-------------------------------------------------------------------------------
+
+class IntervalNode:
+    def __init__(self, interval):
+        self.interval = interval
+        self.max = interval[1]
+
+        self.left = None
+        self.right = None
+
+
+def insert(root, interval):
+    if not root:
+        return IntervalNode(interval)
+
+    if interval[0] < root.interval[0]:
+        root.left = insert(root.left, interval)
+    else:
+        root.right = insert(root.right, interval)
+
+    root.max = max(root.max, interval[1])
+
+    return root
+
+
+def overlap(a, b):
+    return a[0] <= b[1] and b[0] <= a[1]
+
+
+def search(root, interval):
+    if not root:
+        return None
+
+    if overlap(root.interval, interval):
+        return root.interval
+
+    if root.left and root.left.max >= interval[0]:
+        return search(root.left, interval)
+
+    return search(root.right, interval)
+
+
+root = None
+
+intervals = [(15,20),(10,30),(17,19),(5,20)]
+
+for iv in intervals:
+    root = insert(root, iv)
+
+print(search(root, (14,16)))
+
