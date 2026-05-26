@@ -1,0 +1,39 @@
+Concepts: Immutable data structures
+
+------------------------------------------------------------------------------
+
+class PersistentDSU:
+    def __init__(self, n):
+        self.parent_versions = [[i for i in range(n)]]
+
+    def find(self, parent, x):
+        while parent[x] != x:
+            x = parent[x]
+
+        return x
+
+    def union(self, version, a, b):
+        parent = self.parent_versions[version][:]
+
+        pa = self.find(parent, a)
+        pb = self.find(parent, b)
+
+        if pa != pb:
+            parent[pb] = pa
+
+        self.parent_versions.append(parent)
+
+    def connected(self, version, a, b):
+        parent = self.parent_versions[version]
+
+        return self.find(parent, a) == \
+               self.find(parent, b)
+
+
+dsu = PersistentDSU(5)
+
+dsu.union(0, 0, 1)
+dsu.union(1, 1, 2)
+
+print(dsu.connected(0, 0, 2))
+print(dsu.connected(2, 0, 2))
