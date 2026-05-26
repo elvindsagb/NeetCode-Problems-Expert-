@@ -1,0 +1,41 @@
+Concepts: Number theory optimization
+
+-------------------------------------------------------------------------------------------
+
+import math
+
+def sieve_of_atkin(limit):
+    sieve = [False] * (limit + 1)
+
+    sqrt = int(math.sqrt(limit)) + 1
+
+    for x in range(1, sqrt):
+        for y in range(1, sqrt):
+
+            n = 4*x*x + y*y
+            if n <= limit and n % 12 in (1,5):
+                sieve[n] ^= True
+
+            n = 3*x*x + y*y
+            if n <= limit and n % 12 == 7:
+                sieve[n] ^= True
+
+            n = 3*x*x - y*y
+            if x > y and n <= limit and n % 12 == 11:
+                sieve[n] ^= True
+
+    for n in range(5, sqrt):
+        if sieve[n]:
+            for k in range(n*n, limit+1, n*n):
+                sieve[k] = False
+
+    primes = [2,3]
+
+    for n in range(5, limit+1):
+        if sieve[n]:
+            primes.append(n)
+
+    return primes
+
+
+print(sieve_of_atkin(50))
