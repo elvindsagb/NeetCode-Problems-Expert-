@@ -1,0 +1,32 @@
+Concepts: Randomized number theory
+
+------------------------------------------------------------------------------------------------
+
+import random
+import math
+
+def pollard_rho(n):
+
+    if n % 2 == 0:
+        return 2
+
+    def f(x):
+        return (x*x + 1) % n
+
+    x = random.randint(2, n - 1)
+    y = x
+    d = 1
+
+    while d == 1:
+        x = f(x)
+        y = f(f(y))
+
+        d = math.gcd(abs(x - y), n)
+
+    if d == n:
+        return None
+
+    return d
+
+
+print(pollard_rho(8051))
