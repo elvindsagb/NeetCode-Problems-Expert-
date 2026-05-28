@@ -1,0 +1,96 @@
+Concepts: Advanced range updates
+
+--------------------------------------------------------------------------------------------
+
+class SegmentTree:
+    def __init__(self, arr):
+        self.n = len(arr)
+
+        self.tree = [0] * (4 * self.n)
+        self.lazy = [0] * (4 * self.n)
+
+        self.build(arr, 0, 0, self.n - 1)
+
+    def build(self, arr, idx, l, r):
+
+        if l == r:
+            self.tree[idx] = arr[l]
+            return
+
+        mid = (l + r) // 2
+
+        self.build(arr, 2*idx+1, l, mid)
+        self.build(arr, 2*idx+2, mid+1, r)
+
+        self.tree[idx] = \
+            self.tree[2*idx+1] + \
+            self.tree[2*idx+2]
+
+    def update(self, idx, l, r, ql, qr, val):
+
+        if self.lazy[idx] != 0:
+            self.tree[idx] += \
+                (r - l + 1) * self.lazy[idx]
+
+            if l != r:
+                self.lazy[2*idx+1] += self.lazy[idx]
+                self.lazy[2*idx+2] += self.lazy[idx]
+
+            self.lazy[idx] = 0
+
+        if ql > r or qr < l:
+            return
+
+        if ql <= l and r <= qr:
+            self.tree[idx] += \
+                (r - l + 1) * val
+
+            if l != r:
+                self.lazy[2*idx+1] += val
+                self.lazy[2*idx+2] += val
+
+            return
+
+        mid = (l + r) // 2
+
+        self.update(2*idx+1, l, mid, ql, qr, val)
+        self.update(2*idx+2, mid+1, r, ql, qr, val)
+
+        self.tree[idx] = \
+            self.tree[2*idx+1] + \
+            self.tree[2*idx+2]
+
+    def query(self, idx, l, r, ql, qr):
+
+        if ql > r or qr < l:
+            return 0
+
+        if self.lazy[idx] != 0:
+            self.tree[idx] += \
+                (r - l + 1) * self.lazy[idx]
+
+            if l != r:
+                self.lazy[2*idx+1] += self.lazy[idx]
+                self.lazy[2*idx+2] += self.lazy[idx]
+
+            self.lazy[idx] = 0
+
+        if ql <= l and r <= qr:
+            return self.tree[idx]
+
+        mid = (l + r) // 2
+
+        return (
+            self.query(2*idx+1, l, mid, ql, qr)
+            +
+            self.query(2*idx+2, mid+1, r, ql, qr)
+        )
+
+
+arr = [1,2,3,4,5]
+
+st = SegmentTree(arr)
+
+st.update(0, 0, 4, 1, 3, 10)
+
+print(st.query(0, 0, 4, 0, 4))
