@@ -1,0 +1,64 @@
+Concepts: SCC + DAG compression
+
+----------------------------------------------------------------------------------------------------------------------------
+
+from collections import defaultdict
+
+def kosaraju(graph, n):
+    visited = [False] * n
+    order = []
+
+    def dfs(v):
+        visited[v] = True
+
+        for nei in graph[v]:
+            if not visited[nei]:
+                dfs(nei)
+
+        order.append(v)
+
+    for i in range(n):
+        if not visited[i]:
+            dfs(i)
+
+    reverse = defaultdict(list)
+
+    for u in graph:
+        for v in graph[u]:
+            reverse[v].append(u)
+
+    comp = [-1] * n
+
+    def rev_dfs(v, c):
+        comp[v] = c
+
+        for nei in reverse[v]:
+            if comp[nei] == -1:
+                rev_dfs(nei, c)
+
+    cid = 0
+
+    for v in reversed(order):
+        if comp[v] == -1:
+            rev_dfs(v, cid)
+            cid += 1
+
+    dag = defaultdict(set)
+
+    for u in graph:
+        for v in graph[u]:
+            if comp[u] != comp[v]:
+                dag[comp[u]].add(comp[v])
+
+    return comp, dag
+
+
+graph = {
+    0: [1],
+    1: [2],
+    2: [0, 3],
+    3: [4],
+    4: []
+}
+
+print(kosaraju(graph, 5))
