@@ -1,0 +1,31 @@
+Concepts: Linear Algebra over GF(2)
+
+----------------------------------------------------------------------------
+
+def max_xor_subset(nums):
+    basis = [0] * 64
+
+    for x in nums:
+
+        for bit in reversed(range(64)):
+
+            if not (x & (1 << bit)):
+                continue
+
+            if basis[bit] == 0:
+                basis[bit] = x
+                break
+
+            x ^= basis[bit]
+
+    result = 0
+
+    for bit in reversed(range(64)):
+        result = max(result, result ^ basis[bit])
+
+    return result
+
+
+nums = [2, 4, 5]
+
+print(max_xor_subset(nums))
