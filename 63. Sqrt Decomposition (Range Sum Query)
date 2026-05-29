@@ -1,0 +1,42 @@
+Concepts: Block decomposition
+
+------------------------------------------------------------------------
+
+import math
+
+class SqrtDecomposition:
+    def __init__(self, arr):
+        self.arr = arr
+
+        self.n = len(arr)
+
+        self.block_size = int(math.sqrt(self.n))
+
+        self.blocks = [0] * (self.block_size + 1)
+
+        for i in range(self.n):
+            self.blocks[i // self.block_size] += arr[i]
+
+    def query(self, l, r):
+        s = 0
+
+        while l <= r and l % self.block_size != 0:
+            s += self.arr[l]
+            l += 1
+
+        while l + self.block_size - 1 <= r:
+            s += self.blocks[l // self.block_size]
+            l += self.block_size
+
+        while l <= r:
+            s += self.arr[l]
+            l += 1
+
+        return s
+
+
+arr = [1,2,3,4,5,6,7,8]
+
+sd = SqrtDecomposition(arr)
+
+print(sd.query(2, 6))
