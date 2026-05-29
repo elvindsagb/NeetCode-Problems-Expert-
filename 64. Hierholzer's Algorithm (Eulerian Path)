@@ -1,0 +1,34 @@
+Concepts: Graph Theory
+
+-----------------------------------------------------------------------------------------------
+
+from collections import defaultdict
+
+def eulerian_path(edges):
+    graph = defaultdict(list)
+
+    for u, v in edges:
+        graph[u].append(v)
+
+    stack = [edges[0][0]]
+    path = []
+
+    while stack:
+        node = stack[-1]
+
+        if graph[node]:
+            stack.append(graph[node].pop())
+        else:
+            path.append(stack.pop())
+
+    return path[::-1]
+
+
+edges = [
+    (0,1),
+    (1,2),
+    (2,0),
+    (0,3)
+]
+
+print(eulerian_path(edges))
