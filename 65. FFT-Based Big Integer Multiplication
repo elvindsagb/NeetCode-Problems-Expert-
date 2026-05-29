@@ -1,0 +1,43 @@
+Concepts: Signal Processing + Large Number Arithmetic
+
+----------------------------------------------------------------------------------------------------
+
+import numpy as np
+
+def multiply(a, b):
+    a = list(map(int, str(a)))[::-1]
+    b = list(map(int, str(b)))[::-1]
+
+    n = 1
+
+    while n < len(a) + len(b):
+        n *= 2
+
+    fa = np.fft.fft(a, n)
+    fb = np.fft.fft(b, n)
+
+    fc = fa * fb
+
+    result = np.fft.ifft(fc).real.round().astype(int)
+
+    carry = 0
+
+    for i in range(len(result)):
+        result[i] += carry
+        carry = result[i] // 10
+        result[i] %= 10
+
+    while carry:
+        result = np.append(result, carry % 10)
+        carry //= 10
+
+    while len(result) > 1 and result[-1] == 0:
+        result = result[:-1]
+
+    return ''.join(map(str, result[::-1]))
+
+
+print(multiply(
+    12345678901234567890,
+    98765432109876543210
+))
