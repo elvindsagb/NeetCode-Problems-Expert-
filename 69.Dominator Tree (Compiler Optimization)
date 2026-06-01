@@ -1,0 +1,58 @@
+Concepts: Compiler theory + graph analysis
+
+--------------------------------------------------------------------------------------------------------------
+
+from collections import defaultdict
+
+def dominators(graph, start):
+
+    nodes = list(graph.keys())
+
+    dom = {
+        node: set(nodes)
+        for node in nodes
+    }
+
+    dom[start] = {start}
+
+    changed = True
+
+    while changed:
+
+        changed = False
+
+        for node in nodes:
+
+            if node == start:
+                continue
+
+            preds = [
+                u
+                for u in graph
+                if node in graph[u]
+            ]
+
+            if preds:
+
+                new_dom = set(dom[preds[0]])
+
+                for p in preds[1:]:
+                    new_dom &= dom[p]
+
+                new_dom.add(node)
+
+                if new_dom != dom[node]:
+                    dom[node] = new_dom
+                    changed = True
+
+    return dom
+
+
+graph = {
+    0:[1,2],
+    1:[3],
+    2:[3],
+    3:[]
+}
+
+print(dominators(graph,0))
