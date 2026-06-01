@@ -1,0 +1,73 @@
+Concepts: Amortized O(log n), dynamic optimization
+
+----------------------------------------------------------------------------------
+
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.parent = None
+
+class SplayTree:
+
+    def rotate_left(self, x):
+        y = x.right
+
+        x.right = y.left
+
+        if y.left:
+            y.left.parent = x
+
+        y.parent = x.parent
+
+        if not x.parent:
+            self.root = y
+        elif x == x.parent.left:
+            x.parent.left = y
+        else:
+            x.parent.right = y
+
+        y.left = x
+        x.parent = y
+
+    def rotate_right(self, x):
+        y = x.left
+
+        x.left = y.right
+
+        if y.right:
+            y.right.parent = x
+
+        y.parent = x.parent
+
+        if not x.parent:
+            self.root = y
+        elif x == x.parent.right:
+            x.parent.right = y
+        else:
+            x.parent.left = y
+
+        y.right = x
+        x.parent = y
+
+    def splay(self, x):
+        while x.parent:
+
+            if not x.parent.parent:
+                if x.parent.left == x:
+                    self.rotate_right(x.parent)
+                else:
+                    self.rotate_left(x.parent)
+
+            elif x.parent.left == x and \
+                 x.parent.parent.left == x.parent:
+                self.rotate_right(x.parent.parent)
+                self.rotate_right(x.parent)
+
+            elif x.parent.right == x and \
+                 x.parent.parent.right == x.parent:
+                self.rotate_left(x.parent.parent)
+                self.rotate_left(x.parent)
+
+tree = SplayTree()
