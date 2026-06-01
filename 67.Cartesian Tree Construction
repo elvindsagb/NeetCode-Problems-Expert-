@@ -1,0 +1,35 @@
+Concepts: RMQ preprocessing
+
+----------------------------------------------------------------------------------------------
+
+class CartesianNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def build_cartesian(arr):
+    stack = []
+
+    for value in arr:
+
+        last = None
+
+        node = CartesianNode(value)
+
+        while stack and stack[-1].value > value:
+            last = stack.pop()
+
+        node.left = last
+
+        if stack:
+            stack[-1].right = node
+
+        stack.append(node)
+
+    return stack[0]
+
+
+root = build_cartesian([5,2,6,1,3])
+
+print(root.value)
