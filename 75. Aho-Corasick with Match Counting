@@ -1,0 +1,83 @@
+Concepts: Multi-pattern Search Engine
+
+-----------------------------------------------------------------------------------------------
+
+from collections import deque
+
+class AhoCorasick:
+
+    def __init__(self):
+        self.trie = [{}]
+        self.fail = [0]
+        self.output = [[]]
+
+    def add(self, word):
+        node = 0
+
+        for ch in word:
+
+            if ch not in self.trie[node]:
+                self.trie[node][ch] = len(self.trie)
+
+                self.trie.append({})
+                self.fail.append(0)
+                self.output.append([])
+
+            node = self.trie[node][ch]
+
+        self.output[node].append(word)
+
+    def build(self):
+        q = deque()
+
+        for ch, nxt in self.trie[0].items():
+            q.append(nxt)
+
+        while q:
+
+            v = q.popleft()
+
+            for ch, nxt in self.trie[v].items():
+
+                f = self.fail[v]
+
+                while f and ch not in self.trie[f]:
+                    f = self.fail[f]
+
+                self.fail[nxt] = self.trie[f].get(ch, 0)
+
+                self.output[nxt] += \
+                    self.output[self.fail[nxt]]
+
+                q.append(nxt)
+
+    def search(self, text):
+
+        node = 0
+
+        matches = []
+
+        for i, ch in enumerate(text):
+
+            while node and ch not in self.trie[node]:
+                node = self.fail[node]
+
+            node = self.trie[node].get(ch, 0)
+
+            for word in self.output[node]:
+                matches.append(
+                    (i - len(word) + 1, word)
+                )
+
+        return matches
+
+
+ac = AhoCorasick()
+
+ac.add("he")
+ac.add("she")
+ac.add("his")
+
+ac.build()
+
+print(ac.search("ahishers"))
