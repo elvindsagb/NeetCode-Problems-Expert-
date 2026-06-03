@@ -1,0 +1,45 @@
+Concepts: Functional Data Structures
+
+----------------------------------------------------------------------------------
+
+import random
+
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.priority = random.random()
+
+        self.left = None
+        self.right = None
+
+def split(root, key):
+
+    if not root:
+        return None, None
+
+    if key < root.key:
+
+        left, right = split(root.left, key)
+
+        new_root = Node(root.key)
+
+        new_root.left = right
+        new_root.right = root.right
+
+        return left, new_root
+
+    left, right = split(root.right, key)
+
+    new_root = Node(root.key)
+
+    new_root.left = root.left
+    new_root.right = left
+
+    return new_root, right
+
+
+root = Node(10)
+
+left, right = split(root, 5)
+
+print(left, right)
