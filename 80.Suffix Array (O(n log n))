@@ -1,0 +1,50 @@
+Concepts: Advanced String Processing
+
+-----------------------------------------------------------------------------------
+
+def suffix_array(s):
+    n = len(s)
+
+    rank = [ord(c) for c in s]
+
+    temp = [0] * n
+
+    sa = list(range(n))
+
+    k = 1
+
+    while k < n:
+
+        sa.sort(
+            key=lambda x: (
+                rank[x],
+                rank[x+k] if x+k < n else -1
+            )
+        )
+
+        temp[sa[0]] = 0
+
+        for i in range(1, n):
+
+            prev = sa[i-1]
+            curr = sa[i]
+
+            temp[curr] = temp[prev]
+
+            if (
+                rank[curr],
+                rank[curr+k] if curr+k<n else -1
+            ) != (
+                rank[prev],
+                rank[prev+k] if prev+k<n else -1
+            ):
+                temp[curr] += 1
+
+        rank = temp[:]
+
+        k *= 2
+
+    return sa
+
+
+print(suffix_array("banana"))
