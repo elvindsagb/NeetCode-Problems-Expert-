@@ -1,0 +1,75 @@
+Concepts: Graph Decomposition
+
+---------------------------------------------------------------------------------------
+
+def tarjan(graph):
+    index = 0
+    stack = []
+    on_stack = set()
+
+    indices = {}
+    lowlink = {}
+
+    result = []
+
+    def dfs(v):
+        nonlocal index
+
+        indices[v] = lowlink[v] = index
+        index += 1
+
+        stack.append(v)
+        on_stack.add(v)
+
+        for w in graph[v]:
+
+            if w not in indices:
+
+                dfs(w)
+
+                lowlink[v] = min(
+                    lowlink[v],
+                    lowlink[w]
+                )
+
+            elif w in on_stack:
+
+                lowlink[v] = min(
+                    lowlink[v],
+                    indices[w]
+                )
+
+        if lowlink[v] == indices[v]:
+
+            component = []
+
+            while True:
+
+                w = stack.pop()
+
+                on_stack.remove(w)
+
+                component.append(w)
+
+                if w == v:
+                    break
+
+            result.append(component)
+
+    for node in graph:
+
+        if node not in indices:
+            dfs(node)
+
+    return result
+
+
+graph = {
+    0:[1],
+    1:[2],
+    2:[0,3],
+    3:[4],
+    4:[]
+}
+
+print(tarjan(graph))
