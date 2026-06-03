@@ -1,0 +1,70 @@
+Concepts: Balanced Trees, Database Indexing
+
+----------------------------------------------------------------------------------
+
+RED = True
+BLACK = False
+
+class Node:
+    def __init__(self, key):
+        self.key = key
+        self.color = RED
+        self.left = None
+        self.right = None
+
+def is_red(node):
+    return node is not None and node.color == RED
+
+def rotate_left(h):
+    x = h.right
+    h.right = x.left
+    x.left = h
+
+    x.color = h.color
+    h.color = RED
+
+    return x
+
+def rotate_right(h):
+    x = h.left
+    h.left = x.right
+    x.right = h
+
+    x.color = h.color
+    h.color = RED
+
+    return x
+
+def flip_colors(h):
+    h.color = RED
+    h.left.color = BLACK
+    h.right.color = BLACK
+
+def insert(h, key):
+    if h is None:
+        return Node(key)
+
+    if key < h.key:
+        h.left = insert(h.left, key)
+    elif key > h.key:
+        h.right = insert(h.right, key)
+
+    if is_red(h.right) and not is_red(h.left):
+        h = rotate_left(h)
+
+    if is_red(h.left) and is_red(h.left.left):
+        h = rotate_right(h)
+
+    if is_red(h.left) and is_red(h.right):
+        flip_colors(h)
+
+    return h
+
+root = None
+
+for x in [10, 20, 30, 15]:
+    root = insert(root, x)
+
+root.color = BLACK
+
+print(root.key)
