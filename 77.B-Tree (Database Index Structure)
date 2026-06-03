@@ -1,0 +1,34 @@
+Concepts: Databases, File Systems
+
+----------------------------------------------------------------------------------------
+
+class BTreeNode:
+    def __init__(self, leaf=True):
+        self.keys = []
+        self.children = []
+        self.leaf = leaf
+
+class BTree:
+    def __init__(self, t):
+        self.root = BTreeNode()
+        self.t = t
+
+    def search(self, node, key):
+        i = 0
+
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+
+        if i < len(node.keys) and key == node.keys[i]:
+            return True
+
+        if node.leaf:
+            return False
+
+        return self.search(node.children[i], key)
+
+tree = BTree(3)
+
+tree.root.keys = [10, 20, 30]
+
+print(tree.search(tree.root, 20))
