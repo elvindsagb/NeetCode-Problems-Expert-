@@ -1,0 +1,38 @@
+Concepts: Computational Geometry + Spatial Search
+
+--------------------------------------------------------------------------------
+
+class KDNode:
+    def __init__(self, point):
+        self.point = point
+        self.left = None
+        self.right = None
+
+def build(points, depth=0):
+    if not points:
+        return None
+
+    axis = depth % 2
+
+    points.sort(key=lambda x: x[axis])
+
+    mid = len(points) // 2
+
+    node = KDNode(points[mid])
+
+    node.left = build(points[:mid], depth + 1)
+    node.right = build(points[mid+1:], depth + 1)
+
+    return node
+
+points = [
+    (2,3),
+    (5,4),
+    (9,6),
+    (4,7),
+    (8,1)
+]
+
+root = build(points)
+
+print(root.point)
