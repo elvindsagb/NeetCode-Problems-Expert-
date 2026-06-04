@@ -1,0 +1,56 @@
+Concepts: Sparse Range Queries up to 10⁹
+
+--------------------------------------------------------------------------------------------
+
+class Node:
+    def __init__(self):
+        self.left = None
+        self.right = None
+        self.value = 0
+
+class DynamicSegmentTree:
+    def __init__(self):
+        self.root = Node()
+
+    def update(self, node, start, end, idx, val):
+        if start == end:
+            node.value += val
+            return
+
+        mid = (start + end) // 2
+
+        if idx <= mid:
+            if not node.left:
+                node.left = Node()
+
+            self.update(
+                node.left,
+                start,
+                mid,
+                idx,
+                val
+            )
+        else:
+            if not node.right:
+                node.right = Node()
+
+            self.update(
+                node.right,
+                mid + 1,
+                end,
+                idx,
+                val
+            )
+
+        node.value = (
+            (node.left.value if node.left else 0)
+            +
+            (node.right.value if node.right else 0)
+        )
+
+
+dst = DynamicSegmentTree()
+
+dst.update(dst.root, 0, 10**9, 1000000, 5)
+
+print(dst.root.value)
