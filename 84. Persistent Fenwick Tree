@@ -1,0 +1,35 @@
+Concepts: Versioned Prefix Sum Queries
+
+-------------------------------------------------------------------------------------------
+
+class PersistentFenwick:
+    def __init__(self, n):
+        self.n = n
+        self.versions = [[0] * (n + 1)]
+
+    def update(self, version, idx, delta):
+        bit = self.versions[version][:]
+
+        while idx <= self.n:
+            bit[idx] += delta
+            idx += idx & -idx
+
+        self.versions.append(bit)
+
+    def query(self, version, idx):
+        bit = self.versions[version]
+
+        result = 0
+
+        while idx:
+            result += bit[idx]
+            idx -= idx & -idx
+
+        return result
+
+
+pf = PersistentFenwick(10)
+
+pf.update(0, 3, 5)
+
+print(pf.query(1, 3))
