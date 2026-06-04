@@ -1,0 +1,31 @@
+Concepts: Exact Cover Problem
+
+-------------------------------------------------------------------------------
+
+class DLXNode:
+    def __init__(self):
+        self.left = self
+        self.right = self
+        self.up = self
+        self.down = self
+        self.column = None
+
+class ColumnNode(DLXNode):
+    def __init__(self, name):
+        super().__init__()
+        self.size = 0
+        self.name = name
+
+class DancingLinks:
+    def __init__(self):
+        self.header = ColumnNode("header")
+
+    def cover(self, column):
+        column.right.left = column.left
+        column.left.right = column.right
+
+    def uncover(self, column):
+        column.right.left = column
+        column.left.right = column
+
+print("Dancing Links Initialized")
