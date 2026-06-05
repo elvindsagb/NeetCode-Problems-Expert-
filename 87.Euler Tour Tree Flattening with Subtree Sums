@@ -1,0 +1,44 @@
+Concepts: Tree Queries + Flattening
+
+----------------------------------------------------------------------------------------
+
+tree = {
+    1:[2,3],
+    2:[4,5],
+    3:[],
+    4:[],
+    5:[]
+}
+
+values = {
+    1:10,
+    2:20,
+    3:30,
+    4:40,
+    5:50
+}
+
+tour = []
+start = {}
+end = {}
+
+timer = 0
+
+def dfs(node):
+    global timer
+
+    start[node] = timer
+
+    tour.append(values[node])
+
+    timer += 1
+
+    for child in tree[node]:
+        dfs(child)
+
+    end[node] = timer - 1
+
+dfs(1)
+
+print(tour)
+print(start[2], end[2])
