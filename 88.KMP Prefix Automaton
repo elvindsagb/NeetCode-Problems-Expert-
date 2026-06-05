@@ -1,0 +1,50 @@
+Concepts: String Automata
+
+------------------------------------------------------------------------------
+
+def build_automaton(pattern):
+
+    n = len(pattern)
+
+    pi = [0] * n
+
+    for i in range(1, n):
+
+        j = pi[i - 1]
+
+        while j > 0 and pattern[i] != pattern[j]:
+            j = pi[j - 1]
+
+        if pattern[i] == pattern[j]:
+            j += 1
+
+        pi[i] = j
+
+    automaton = []
+
+    for state in range(n + 1):
+
+        row = {}
+
+        for c in "abcdefghijklmnopqrstuvwxyz":
+
+            if state < n and c == pattern[state]:
+                row[c] = state + 1
+            else:
+
+                j = state
+
+                while j > 0 and (
+                    j == n or pattern[j] != c
+                ):
+                    j = pi[j - 1]
+
+                row[c] = j + (
+                    j < n and pattern[j] == c
+                )
+
+        automaton.append(row)
+
+    return automaton
+
+print(build_automaton("abab")[0])
