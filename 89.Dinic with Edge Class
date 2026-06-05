@@ -1,0 +1,40 @@
+Concepts: Industrial-Grade Max Flow
+
+---------------------------------------------------------------
+
+from collections import deque
+
+class Edge:
+    def __init__(self, to, cap, rev):
+        self.to = to
+        self.cap = cap
+        self.rev = rev
+
+class Dinic:
+
+    def __init__(self, n):
+        self.n = n
+        self.graph = [[] for _ in range(n)]
+
+    def add_edge(self, fr, to, cap):
+
+        fwd = Edge(
+            to,
+            cap,
+            len(self.graph[to])
+        )
+
+        rev = Edge(
+            fr,
+            0,
+            len(self.graph[fr])
+        )
+
+        self.graph[fr].append(fwd)
+        self.graph[to].append(rev)
+
+d = Dinic(4)
+
+d.add_edge(0,1,10)
+
+print(d.graph[0][0].cap)
