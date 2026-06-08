@@ -1,0 +1,48 @@
+Concepts: Boolean Satisfiability, Logic Engines
+
+----------------------------------------------------------------------------
+
+def dpll(clauses, assignment):
+
+    if not clauses:
+        return assignment
+
+    if [] in clauses:
+        return None
+
+    literal = clauses[0][0]
+
+    for value in [literal, -literal]:
+
+        new_clauses = []
+
+        for clause in clauses:
+
+            if value in clause:
+                continue
+
+            new_clause = [
+                x for x in clause
+                if x != -value
+            ]
+
+            new_clauses.append(new_clause)
+
+        result = dpll(
+            new_clauses,
+            assignment + [value]
+        )
+
+        if result is not None:
+            return result
+
+    return None
+
+
+clauses = [
+    [1, 2],
+    [-1, 3],
+    [-2, -3]
+]
+
+print(dpll(clauses, []))
