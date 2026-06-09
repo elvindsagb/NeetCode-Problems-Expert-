@@ -1,0 +1,45 @@
+Concepts: Automata Theory, Compiler Design
+
+-----------------------------------------------------------------------------------------------------
+
+from collections import defaultdict, deque
+
+nfa = {
+    0: {'a': [0, 1]},
+    1: {'b': [2]},
+    2: {}
+}
+
+start = frozenset([0])
+
+queue = deque([start])
+
+dfa = {}
+
+visited = {start}
+
+while queue:
+
+    state = queue.popleft()
+
+    dfa[state] = {}
+
+    for symbol in ['a', 'b']:
+
+        nxt = set()
+
+        for s in state:
+            nxt.update(
+                nfa.get(s, {})
+                   .get(symbol, [])
+            )
+
+        nxt = frozenset(nxt)
+
+        dfa[state][symbol] = nxt
+
+        if nxt and nxt not in visited:
+            visited.add(nxt)
+            queue.append(nxt)
+
+print(dfa)
