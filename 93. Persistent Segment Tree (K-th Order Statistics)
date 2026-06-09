@@ -1,0 +1,30 @@
+Concepts: Versioned Data Structures
+
+---------------------------------------------------------------------------
+
+class Node:
+    def __init__(
+        self,
+        left=None,
+        right=None,
+        value=0
+    ):
+        self.left = left
+        self.right = right
+        self.value = value
+
+def build(l, r):
+
+    if l == r:
+        return Node()
+
+    mid = (l + r) // 2
+
+    return Node(
+        build(l, mid),
+        build(mid + 1, r)
+    )
+
+root = build(1, 10)
+
+print(root.value)
