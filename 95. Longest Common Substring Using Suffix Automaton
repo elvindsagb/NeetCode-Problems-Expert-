@@ -1,0 +1,42 @@
+Concepts: Advanced String Processing
+
+---------------------------------------------------------------------------
+
+class State:
+    def __init__(self):
+        self.next = {}
+        self.link = -1
+        self.length = 0
+
+states = [State()]
+
+last = 0
+
+def extend(c):
+    global last
+
+    cur = len(states)
+
+    states.append(State())
+
+    states[cur].length = \
+        states[last].length + 1
+
+    p = last
+
+    while p >= 0 and \
+          c not in states[p].next:
+
+        states[p].next[c] = cur
+
+        p = states[p].link
+
+    if p == -1:
+        states[cur].link = 0
+
+    last = cur
+
+for ch in "banana":
+    extend(ch)
+
+print(len(states))
