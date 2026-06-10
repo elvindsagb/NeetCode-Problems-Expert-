@@ -1,0 +1,39 @@
+Concepts: Balanced BST + Range Updates
+
+-----------------------------------------------------------------------------
+
+import random
+
+class TreapNode:
+    def __init__(self, val):
+
+        self.val = val
+
+        self.priority = random.random()
+
+        self.left = None
+        self.right = None
+
+        self.lazy = 0
+
+def push(node):
+
+    if node and node.lazy:
+
+        node.val += node.lazy
+
+        if node.left:
+            node.left.lazy += node.lazy
+
+        if node.right:
+            node.right.lazy += node.lazy
+
+        node.lazy = 0
+
+root = TreapNode(10)
+
+root.lazy = 5
+
+push(root)
+
+print(root.val)
