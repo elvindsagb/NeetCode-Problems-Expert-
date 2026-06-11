@@ -1,0 +1,29 @@
+Concepts: Fast practical priority queue
+
+--------------------------------------------------
+
+class PairingHeapNode:
+    def __init__(self, key):
+        self.key = key
+        self.children = []
+
+def merge(a, b):
+    if not a:
+        return b
+
+    if not b:
+        return a
+
+    if a.key > b.key:
+        a, b = b, a
+
+    a.children.append(b)
+
+    return a
+
+heap1 = PairingHeapNode(10)
+heap2 = PairingHeapNode(5)
+
+root = merge(heap1, heap2)
+
+print(root.key)
