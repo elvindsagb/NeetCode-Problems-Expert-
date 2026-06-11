@@ -1,0 +1,45 @@
+Concepts: Amortized O(1) insertion, O(log n) extract-min
+
+-------------------------------------------------------------------------
+
+class FibNode:
+    def __init__(self, key):
+        self.key = key
+        self.degree = 0
+        self.parent = None
+        self.child = None
+        self.mark = False
+
+        self.left = self
+        self.right = self
+
+class FibonacciHeap:
+    def __init__(self):
+        self.min_node = None
+        self.total_nodes = 0
+
+    def insert(self, key):
+        node = FibNode(key)
+
+        if self.min_node is None:
+            self.min_node = node
+        else:
+            node.left = self.min_node
+            node.right = self.min_node.right
+
+            self.min_node.right.left = node
+            self.min_node.right = node
+
+            if node.key < self.min_node.key:
+                self.min_node = node
+
+        self.total_nodes += 1
+        return node
+
+heap = FibonacciHeap()
+
+heap.insert(10)
+heap.insert(3)
+heap.insert(20)
+
+print(heap.min_node.key)
