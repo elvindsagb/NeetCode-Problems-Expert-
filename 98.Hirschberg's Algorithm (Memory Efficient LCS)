@@ -1,0 +1,26 @@
+Concepts: Dynamic Programming + Divide & Conquer
+
+-----------------------------------------------------------------------------------
+
+def lcs_length(a, b):
+    prev = [0] * (len(b) + 1)
+
+    for x in a:
+        curr = [0]
+
+        for j, y in enumerate(b):
+            if x == y:
+                curr.append(prev[j] + 1)
+            else:
+                curr.append(
+                    max(curr[-1], prev[j + 1])
+                )
+
+        prev = curr
+
+    return prev
+
+s1 = "AGGTAB"
+s2 = "GXTXAYB"
+
+print(lcs_length(s1, s2)[-1])
